@@ -1,36 +1,36 @@
 services:
   postgres:
     image: postgres:18-alpine
-    container_name: food_postgres_staging
+    container_name: company-report-postgres-staging
     restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME:-food_db}
-      POSTGRES_USER: ${DB_USER:-food_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-food_secret}
+      POSTGRES_DB: ${DB_NAME:-company_report_db}
+      POSTGRES_USER: ${DB_USER:-company_report_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-company_report_secret}
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "${DB_PORT_EXTERNAL:-5432}:5432"
     volumes:
-      - food_postgres_staging_data:/var/lib/postgresql/data
+      - company_report_postgres_staging_data:/var/lib/postgresql/data
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U $${POSTGRES_USER:-food_user} -d $${POSTGRES_DB:-food_db}",
+          "pg_isready -U $${POSTGRES_USER:-company_report_user} -d $${POSTGRES_DB:-company_report_db}",
         ]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 10s
     networks:
-      - food_staging_network
+      - company-report-staging-network
 
   server:
     build:
       context: ./server
       dockerfile: Dockerfile.staging
-    image: food-server:staging
-    container_name: food_server_staging
+    image: company-report-server:staging
+    container_name: company-report-server-staging
     restart: always
     environment:
       APP_ENV: staging
@@ -38,22 +38,22 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       DB_HOST: ${DB_HOST:-postgres}
       DB_PORT: ${DB_PORT:-5432}
-      DB_NAME: ${DB_NAME:-food_db}
-      DB_USER: ${DB_USER:-food_user}
-      DB_PASSWORD: ${DB_PASSWORD:-food_secret}
+      DB_NAME: ${DB_NAME:-company_report_db}
+      DB_USER: ${DB_USER:-company_report_user}
+      DB_PASSWORD: ${DB_PASSWORD:-company_report_secret}
       DB_SSLMODE: ${DB_SSLMODE:-disable}
     depends_on:
       postgres:
         condition: service_healthy
     networks:
-      - food_staging_network
+      - company-report-staging-network
 
   nginx:
     build:
       context: ./nginx
       dockerfile: Dockerfile.staging
-    image: food-nginx:staging
-    container_name: food_nginx_staging
+    image: company-report-nginx:staging
+    container_name: company-report-nginx-staging
     restart: always
     ports:
       - "${NGINX_PORT:-80}:80"
@@ -61,12 +61,12 @@ services:
     depends_on:
       - server
     networks:
-      - food_staging_network
+      - company-report-staging-network
 
 volumes:
-  food_postgres_staging_data:
+  company_report_postgres_staging_data:
 
 networks:
-  food_staging_network:
-    name: food_staging_network
+  company-report-staging-network:
+    name: company-report-staging-network
     driver: bridge
