@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 type Config struct {
 	ServerConfig
@@ -22,20 +25,32 @@ type ServerConfig struct {
 	JwtSecret string
 }
 
+func getEnv(key, fallback string) string {
+	if val := os.Getenv(key); val != "" {
+		return val
+	}
+	return fallback
+}
+
 func GetEnv() *Config {
 	return &Config{
-		ServerConfig{
-			Env:       os.Getenv("APP_ENV"),
-			Port:      os.Getenv("PORT"),
-			JwtSecret: os.Getenv("JWT_SECRET"),
+		ServerConfig: ServerConfig{
+			Env:       getEnv("APP_ENV", "development"),
+			Port:      getEnv("PORT", "8080"),
+			JwtSecret: getEnv("JWT_SECRET", "default_secret_key"),
 		},
-		DbConfig{
-			Host:     os.Getenv("DB_HOST"),
-			Port:     os.Getenv("DB_PORT"),
-			Name:     os.Getenv("DB_NAME"),
-			User:     os.Getenv("DB_USER"),
+		DbConfig: DbConfig{
+			Host:     getEnv("DB_HOST", "localhost"),
+			Port:     getEnv("DB_PORT", "5432"),
+			Name:     getEnv("DB_NAME", "postgres"),
+			User:     getEnv("DB_USER", "postgres"),
 			Password: os.Getenv("DB_PASSWORD"),
-			Sslmode:  os.Getenv("DB_SSLMODE"),
+			Sslmode:  getEnv("DB_SSLMODE", "disable"),
 		},
 	}
+}
+
+func (db *DbConfig) dsn() string {
+	return fmt.Sprintf("host=%s user=%s password='%s' dbname=%s port=%s sslmode=%s TimeZone=UTC",
+		db.Host, db.User, db.Password, db.Name, db.Port, db.Sslmode)
 }
