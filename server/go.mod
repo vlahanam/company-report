@@ -4,11 +4,14 @@ go 1.26.10
 
 require (
 	github.com/gin-gonic/gin v1.12.0
+	github.com/go-ozzo/ozzo-validation/v4 v4.5.0
+	github.com/google/uuid v1.6.0
 	gorm.io/driver/postgres v1.6.3
 	gorm.io/gorm v1.31.2
 )
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/bytedance/gopkg v0.1.4 // indirect
 	github.com/bytedance/sonic v1.15.5 // indirect
 	github.com/bytedance/sonic/loader v0.5.3 // indirect

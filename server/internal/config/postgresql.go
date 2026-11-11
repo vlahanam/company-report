@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func SetupDB(dbconfig *DbConfig) {
+func SetupDB(dbconfig *DbConfig) *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dbconfig.dsn()), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -29,4 +29,6 @@ func SetupDB(dbconfig *DbConfig) {
 	sqlDB.SetMaxOpenConns(50)
 	// Maximum amount of time a connection may be reused
 	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	return db
 }

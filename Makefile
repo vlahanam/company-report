@@ -92,8 +92,8 @@ clean: ## [VN] Dừng và xóa toàn bộ container, network, volumes của dự
 # [VN] QUẢN LÝ MIGRATION BẰNG GOLANG-MIGRATE V4
 # [VN] ----------------------------------------------------------------------
 DB_MIGRATIONS_DIR = migrations
-SERVER_CONTAINER = food_server_dev
-DB_URL = postgres://food_user:food_secret@postgres:5432/food_db?sslmode=disable
+SERVER_CONTAINER = company-report-postgres-dev
+DB_URL = postgres://company_report_user:company_report_secret@postgres:5432/company_report_db?sslmode=disable
 
 migration: ## [VN] Tạo migration file mới: make migration name=<tên>
 	docker exec $(SERVER_CONTAINER) migrate create -ext sql -dir $(DB_MIGRATIONS_DIR) -seq $(name)

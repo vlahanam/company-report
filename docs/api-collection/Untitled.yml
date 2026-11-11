@@ -1,0 +1,24 @@
+info:
+  name: Untitled
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8088/api/v1/users
+  body:
+    type: json
+    data: |-
+      {
+        "email": "full_name",
+        "password": "full_name",
+        "full_name": "full_name"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

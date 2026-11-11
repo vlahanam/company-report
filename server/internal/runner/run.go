@@ -3,6 +3,7 @@ package runner
 import (
 	"company-report/internal/config"
 	"company-report/internal/delivery"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,9 +11,10 @@ import (
 func Run() {
 	env := config.GetEnv()
 
-	config.SetupDB(&env.DbConfig)
+	db := config.SetupDB(&env.DbConfig)
 
 	r := gin.Default()
-	delivery.RouterSetup(r)
-	r.Run(":8080")
+	delivery.RouterSetup(db, r)
+	port := fmt.Sprintf(":%s", env.ServerConfig.Port)
+	r.Run(port)
 }
