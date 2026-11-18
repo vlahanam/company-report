@@ -18,5 +18,6 @@ func (repo *createUserRepo) GetUser(ctx context.Context, data map[string]interfa
 	if err := repo.db.WithContext(ctx).Where(data).Error; err != nil {
 		return err
 	}
+
 	return nil
 }

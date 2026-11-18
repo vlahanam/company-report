@@ -20,5 +20,6 @@ func (repo *createUserRepo) CreateUser(ctx context.Context, user *entity.User) e
 	if err := repo.db.WithContext(ctx).Create(user).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
