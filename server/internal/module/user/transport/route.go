@@ -9,7 +9,7 @@ import (
 )
 
 func RegisterRoutes(rg *gin.RouterGroup, db *gorm.DB) {
-	repo := repository.NewCreateUserRepo(db)
+	repo := repository.NewUserRepo(db)
 	biz := business.NewCreateUserBiz(repo)
 
 	users := rg.Group("/users")

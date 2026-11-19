@@ -15,6 +15,6 @@ func (u CreateUserReqDTO) Validate() error {
 	return validation.ValidateStruct(&u,
 		validation.Field(&u.Email, validation.Required, is.Email),
 		validation.Field(&u.Password, validation.Required),
-		validation.Field(&u.Password, validation.Max(100)),
+		validation.Field(&u.FullName, validation.Required, validation.RuneLength(0, 100)),
 	)
 }

@@ -1,6 +1,11 @@
 package common
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+)
 
 type ErrorResponse struct {
 	Status  string                 `json:"status"`
@@ -32,9 +37,41 @@ func (r ErrorResponse) WithDetail(details map[string]interface{}) ErrorResponse 
 	return r
 }
 
+func (r ErrorResponse) WithDetailValidation(errValidation error) ErrorResponse {
+	if errValidation == nil {
+		return r
+	}
+
+	var errs validation.Errors
+	if errors.As(errValidation, &errs) && len(errs) > 0 {
+		r.Details = parseValidationErrors(errs)
+	}
+
+	return r
+}
+
 func (r ErrorResponse) WithMessage(message string) ErrorResponse {
 	r.Message = message
 	return r
+}
+
+func parseValidationErrors(errs validation.Errors) map[string]interface{} {
+	resultMap := make(map[string]interface{}, len(errs))
+
+	for key, val := range errs {
+		if val == nil {
+			continue
+		}
+
+		var nestedErrs validation.Errors
+		if errors.As(val, &nestedErrs) {
+			resultMap[key] = parseValidationErrors(nestedErrs)
+		} else {
+			resultMap[key] = val.Error()
+		}
+	}
+
+	return resultMap
 }
 
 var (

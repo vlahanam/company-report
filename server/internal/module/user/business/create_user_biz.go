@@ -2,7 +2,6 @@ package business
 
 import (
 	"context"
-	"errors"
 
 	"company-report/internal/module/user/dto"
 	"company-report/internal/module/user/entity"
@@ -10,6 +9,7 @@ import (
 
 type CreateUserRepository interface {
 	CreateUser(ctx context.Context, user *entity.User) error
+	GetUser(ctx context.Context, data map[string]interface{}, user *entity.User) (*entity.User, error)
 }
 
 type createUserBiz struct {
@@ -21,11 +21,13 @@ func NewCreateUserBiz(repo CreateUserRepository) *createUserBiz {
 }
 
 func (biz *createUserBiz) CreateUser(ctx context.Context, req *dto.CreateUserReqDTO) (*entity.User, error) {
-	if req == nil || req.Email == nil || req.Password == nil {
-		return nil, errors.New("email and password are required")
+	var user *entity.User
+	user, _ = biz.repo.GetUser(ctx, map[string]interface{}{"email": *req.Email}, user)
+	if user != nil {
+		return nil, nil
 	}
 
-	user := entity.User{
+	user = &entity.User{
 		Email:        *req.Email,
 		PasswordHash: *req.Password,
 		FullName:     req.FullName,
@@ -33,9 +35,9 @@ func (biz *createUserBiz) CreateUser(ctx context.Context, req *dto.CreateUserReq
 		TokenVersion: 1,
 	}
 
-	if err := biz.repo.CreateUser(ctx, &user); err != nil {
+	if err := biz.repo.CreateUser(ctx, user); err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	return user, nil
 }

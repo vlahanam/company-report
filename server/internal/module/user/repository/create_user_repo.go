@@ -8,15 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type createUserRepo struct {
+type userRepo struct {
 	db *gorm.DB
 }
 
-func NewCreateUserRepo(db *gorm.DB) *createUserRepo {
-	return &createUserRepo{db: db}
+func NewUserRepo(db *gorm.DB) *userRepo {
+	return &userRepo{db: db}
 }
 
-func (repo *createUserRepo) CreateUser(ctx context.Context, user *entity.User) error {
+func (repo *userRepo) CreateUser(ctx context.Context, user *entity.User) error {
 	if err := repo.db.WithContext(ctx).Create(user).Error; err != nil {
 		return err
 	}
